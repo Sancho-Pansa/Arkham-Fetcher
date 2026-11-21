@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/Sancho-Pansa/Arkham-Helper#readme",
   "devDependencies": {
-    "@types/node": "^22.2.0",
+    "@types/node": "^22.20.5",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.5.4"

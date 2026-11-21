@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
-import Possessions from "./Possessions";
-import Item from "./Item";
+import Possessions from "../Possessions";
+import Item from "../Item";
 import Investigator from "./Investigator";
 
 const LIST = "./lists/investigators.txt";

@@ -7,9 +7,11 @@
     "lib": "lib"
   },
   "scripts": {
+    "dev": "tsx src/index.ts",
     "build": "tsc",
-    "dev": "node dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "run": "node dist/index.js",
+    "test": "vitest",
+    "test:watch": "vitest watch"
   },
   "keywords": [
     "node",
@@ -25,6 +27,8 @@
     "@types/node": "^22.20.5",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.5.4"
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.1.1"
   }
 }

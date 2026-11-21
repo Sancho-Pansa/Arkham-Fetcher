@@ -7,6 +7,7 @@
     "rootDir": "./src",
     "esModuleInterop": true,
     "removeComments": true,
+    "skipLibCheck": true,
     "paths": {
       "@lists/*": ["./lists/*"],
     },
@@ -23,6 +24,7 @@
     "./**/*.ts"
   ],
   "exclude": [
-    "node_modules/**/*"
+    "node_modules",
+    "dist"
   ]
 }

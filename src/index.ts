@@ -1,5 +1,4 @@
 import getInvestigatorsJson from "./investigators/InvestigatorFetcher";
-import { inspect } from "node:util";
 import fs from "node:fs/promises";
 import Investigator from "./investigators/Investigator";
 

@@ -1,41 +1,29 @@
 import fs from "node:fs/promises";
-import Possessions from "../Possessions";
+import Possessions from "./Possessions";
 import Item from "../Item";
 import Investigator from "./Investigator";
+import { getArticleWikitextByName, getArticleTocDataById, getArticleWikitextById } from "../FandomFetcher/ArkhamFandomFetcher";
 
 const LIST = "./lists/investigators.txt";
 const DEFAULT_URL = "https://arkhamhorror.fandom.com/ru/api.php";
 
 export default async function getInvestigatorsJson() {
-  let investigatorList = await fs.readFile(LIST, { encoding: "utf-8" });
-  let promises = investigatorList.split(/\r?\n/g).map(async (s) => {
-    let wikipage = await fetchInvestigatorPage(s);
+  let investigatorList = await getInvestigatorsList();
+  let promises = investigatorList.map(async (s) => {
+    let wikipage = await getArticleWikitextByName(s);
     let parsedObj = parseWikiPage(s, wikipage);
     return parsedObj;
   });
   return Promise.all(promises);
 }
 
-async function fetchInvestigatorPage(investigator: string): Promise<string> {
-  const requestOptions = {
-    method: "GET",
-    redirect: "follow"
-  } as Request;
-  let searchParams = new URLSearchParams({
-    action: "parse",
-    format: "json",
-    formatversion: "2",
-    prop: "wikitext",
-    page: investigator
-  });
-  let url = new URL(`${DEFAULT_URL}?${searchParams.toString()}`);
-
-  let response = await fetch(url, requestOptions);
-  if(!response.ok) {
-    throw new Error("Network error");
-  }
-  let wikitext = (await response.json()).parse.wikitext;
-  return wikitext;
+async function getInvestigatorsList(): Promise<string[]> {
+  const PAGE_ID = 1361;
+  const SECTION_INDEX = "7"
+  const wikitext = await getArticleWikitextById(PAGE_ID, { section: SECTION_INDEX });
+  const investigatorRegex = /\|-\n\| ?\[\[(.*?)\]\]/g;
+  const list = Array.from(wikitext.matchAll(investigatorRegex), (v) => v[1]);
+  return list;
 }
 
 /**
@@ -94,7 +82,7 @@ function parseWikiPage(investigator: string, wikitext: string) {
 }
 
 function removeWikilinks(wikitext: string | undefined) {
-  if(wikitext === undefined) {
+  if (wikitext === undefined) {
     return "";
   }
   const REGEX = /(?:\[\[([^|]*?)\]\]|\[\[.*?\|(.*?)\]\])/g;

@@ -1,5 +1,5 @@
 import Possessions from "./Possessions";
-import Item from "./Item";
+import ItemCard from "./ItemCard";
 import Investigator from "./Investigator";
 import { getArticleWikitextByName, getArticleWikitextById } from "../FandomFetcher/ArkhamFandomFetcher";
 
@@ -118,10 +118,10 @@ function parsePossessions(fixed: string, random: string) {
   return new Possessions(
     money,
     clues,
-    new Item(randomCommons, fixedCommons),
-    new Item(randomUniques, fixedUnuiques),
-    new Item(randomSpells, fixedSpells),
-    new Item(randomSkills, fixedSkills),
-    new Item(randomAllies, fixedAllies)
+    new ItemCard(randomCommons, fixedCommons),
+    new ItemCard(randomUniques, fixedUnuiques),
+    new ItemCard(randomSpells, fixedSpells),
+    new ItemCard(randomSkills, fixedSkills),
+    new ItemCard(randomAllies, fixedAllies)
   );
 }

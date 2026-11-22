@@ -1,11 +1,7 @@
-import fs from "node:fs/promises";
 import Possessions from "./Possessions";
-import Item from "../Item";
+import Item from "./Item";
 import Investigator from "./Investigator";
-import { getArticleWikitextByName, getArticleTocDataById, getArticleWikitextById } from "../FandomFetcher/ArkhamFandomFetcher";
-
-const LIST = "./lists/investigators.txt";
-const DEFAULT_URL = "https://arkhamhorror.fandom.com/ru/api.php";
+import { getArticleWikitextByName, getArticleWikitextById } from "../FandomFetcher/ArkhamFandomFetcher";
 
 export default async function getInvestigatorsJson() {
   let investigatorList = await getInvestigatorsList();
@@ -19,8 +15,8 @@ export default async function getInvestigatorsJson() {
 
 async function getInvestigatorsList(): Promise<string[]> {
   const PAGE_ID = 1361;
-  const SECTION_INDEX = "7"
-  const wikitext = await getArticleWikitextById(PAGE_ID, { section: SECTION_INDEX });
+  const SECTION_INDEX = "7";
+  const wikitext = await getArticleWikitextById(PAGE_ID, { section: SECTION_INDEX }); // Раздел "Список сыщиков"
   const investigatorRegex = /\|-\n\| ?\[\[(.*?)\]\]/g;
   const list = Array.from(wikitext.matchAll(investigatorRegex), (v) => v[1]);
   return list;

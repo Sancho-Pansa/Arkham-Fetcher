@@ -51,7 +51,7 @@ export async function getArticleWikitextById(pageId: number, params?: Record<str
   const prop = "wikitext";
   const requestOptions = {
     method: "GET",
-    redirect: "follow"
+    redirect: "follow",
   } as Request;
 
   const searchParams = new URLSearchParams({

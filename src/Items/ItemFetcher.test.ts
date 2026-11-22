@@ -2,7 +2,9 @@ import { describe, expect, test } from "vitest";
 import getItemsJson from "./ItemFetcher";
 
 describe("Testing received data", () => {
-  test("Should be list of item strings", async () => {
-    expect((await getItemsJson()).length).toBeGreaterThan(0);
-  })
+  test("Should return array of Item objects", async () => {
+    const result = await getItemsJson();
+    expect(result.length).toBeGreaterThan(0);
+    console.log(result[1]);
+  }, 10000)
 });

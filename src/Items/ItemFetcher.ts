@@ -1,6 +1,6 @@
 import { getArticleWikitextById, getArticleWikitextByName } from "../FandomFetcher/ArkhamFandomFetcher";
 import sanitizeWikitext from "../FandomFetcher/WikiSanitizer";
-import Item from "./Item";
+import Item from "./CommonItem";
 
 export default async function getItemsJson() {
   const promises = (await getItemsList()).map(async (itemName) => {

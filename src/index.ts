@@ -2,7 +2,7 @@ import getInvestigatorsJson from "./investigators/InvestigatorFetcher";
 import fs from "node:fs/promises";
 import Investigator from "./investigators/Investigator";
 import getItemsJson from "./Items/ItemFetcher";
-import Item from "./Items/Item";
+import Item from "./Items/CommonItem";
 
 function main() {
   const mode = process.argv[2];

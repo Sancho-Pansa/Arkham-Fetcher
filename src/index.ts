@@ -1,8 +1,19 @@
 import getInvestigatorsJson from "./investigators/InvestigatorFetcher";
 import fs from "node:fs/promises";
-import Investigator from "./investigators/Investigator";
 import getItemsJson from "./Items/ItemFetcher";
-import Item from "./Items/CommonItem";
+import CommonItem from "./Items/CommonItem";
+import { en2ru, fandom2code } from "./Dictionary";
+
+const data: Record<string, Object[]> = {
+  "ужас аркхэма": [],
+  "ужас кингспорта": [],
+  "ужас данвича": [],
+  "ужас иннсмута": [],
+  "черная коза чащоб": [],
+  "проклятие темного фараона (переиздание)": [],
+  "король в желтом": [],
+  "затаившийся у порога": []
+}
 
 function main() {
   const mode = process.argv[2];
@@ -10,83 +21,57 @@ function main() {
     case "investigators":
       writeInvestigatorsToFile()
       break;
-    case "items":
-      writeItemsToFile()
+    case "common":
+      writeCommonItemsToFile()
       break;
     default:
-      console.error("Usage: node index.ts <mode>;\n\tmode: investigators, items");
+      console.error("Usage: node index.ts <mode>;\n\tmode: investigators, common");
       process.exit(1);
   }
 }
 
 function writeInvestigatorsToFile() {
   getInvestigatorsJson().then((json) => {
-    const vanilla: Investigator[] = [];
-    const kingsport: Investigator[] = [];
-    const dunwich: Investigator[] = [];
-    const innsmouth: Investigator[] = [];
     for (let investigator of json) {
-      switch (investigator.expansion.toLocaleLowerCase()) {
-        case "ужас кингспорта":
-          kingsport.push(investigator);
-          break;
-        case "ужас данвича":
-          dunwich.push(investigator);
-          break;
-        case "ужас иннсмута":
-          innsmouth.push(investigator);
-          break;
-        default:
-          vanilla.push(investigator);
+      const expansion = investigator.expansion.toLocaleLowerCase();
+      if (data[expansion]) {
+        data[expansion].push(investigator)
       }
     }
-    return [
-      vanilla,
-      kingsport,
-      dunwich,
-      innsmouth
-    ];
-  }).then(([vanilla, kingsport, dunwich, innsmouth]) => {
-    writeFile(vanilla, "investigators_classic");
-    writeFile(kingsport, "investigators_kingsport");
-    writeFile(dunwich, "investigators_dunwich");
-    writeFile(innsmouth, "investigators_innsmouth");
+  }).then(() => {
+    for (let d of Object.keys(en2ru)) {
+      if (data[d].length > 0) {
+        writeFile(data[d], `investigator_${en2ru[d]}`)
+      }
+    }
   });
 
 }
 
-function writeItemsToFile() {
+function writeCommonItemsToFile() {
   getItemsJson().then((items) => {
-    const vanilla: Item[] = [];
-    const kingsport: Item[] = [];
-    const dunwich: Item[] = [];
-    const innsmouth: Item[] = [];
+    const allItems: Record<string, CommonItem[]> = {};
+    for (let x of Object.keys(en2ru)) {
+      allItems[x] = []
+    }
+    allItems.unknownExpansion = [];
+
     for (let item of items) {
-      switch (item.expansion.toLocaleLowerCase()) {
-        case "ужас кингспорта":
-          kingsport.push(item);
-          break;
-        case "ужас данвича":
-          dunwich.push(item);
-          break;
-        case "ужас иннсмута":
-          innsmouth.push(item);
-          break;
-        default:
-          vanilla.push(item);
+      let expansion = fandom2code[item.expansion] ?? "unknown";
+
+      if (en2ru[expansion]) {
+        allItems[expansion].push(item);
+      } else {
+        allItems.unknownExpansion.push(item);
       }
     }
-    return [
-      vanilla,
-      kingsport,
-      dunwich,
-      innsmouth
-    ];
-  }).then(([vanilla, kingsport, dunwich, innsmouth]) => {
-    writeFile(vanilla, "items_classic");
-    writeFile(kingsport, "items_kingsport");
-    writeFile(dunwich, "items_dunwich");
-    writeFile(innsmouth, "items_innsmouth");
+    return allItems;
+  }).then((allItems) => {
+    for (const [ key, value ] of Object.entries(allItems)) {
+      if (value.length > 0) {
+        writeFile(value, `items_${key}`)
+      }
+    }
   });
 }
 
